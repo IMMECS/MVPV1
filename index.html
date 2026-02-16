@@ -78,19 +78,14 @@
     }
 
     /* ===========================
-       SÖK- OCH FILTERFÄLT
+       SÖKFÄLT
        =========================== */
     .söksektion {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
+      margin-bottom: 1rem;
     }
 
-    .söksektion input,
-    .söksektion select {
-      flex: 1;
-      min-width: 180px;
+    .söksektion input {
+      width: 100%;
       padding: 0.75rem 1rem;
       border: 2px solid var(--färg-ram);
       border-radius: var(--rundning);
@@ -100,10 +95,51 @@
       transition: border-color var(--övergång);
     }
 
-    .söksektion input:focus,
-    .söksektion select:focus {
+    .söksektion input:focus {
       outline: none;
       border-color: var(--färg-primär);
+    }
+
+    /* ===========================
+       KATEGORIFLIKAR
+       Klickbara knappar för filtrering
+       =========================== */
+    .kategoriflikar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .kategoriflik {
+      padding: 0.5rem 1.1rem;
+      border: 2px solid var(--färg-ram);
+      border-radius: 99px;
+      background: var(--färg-kort);
+      color: var(--färg-text-ljus);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--övergång);
+      font-family: inherit;
+    }
+
+    .kategoriflik:hover {
+      border-color: var(--färg-primär);
+      color: var(--färg-primär-mörk);
+    }
+
+    /* Aktiv/vald flik */
+    .kategoriflik.aktiv {
+      background: var(--färg-primär);
+      border-color: var(--färg-primär);
+      color: white;
+    }
+
+    .kategoriflik.aktiv:hover {
+      background: var(--färg-primär-mörk);
+      border-color: var(--färg-primär-mörk);
+      color: white;
     }
 
     /* ===========================
@@ -452,13 +488,13 @@
         padding: 1rem 0.75rem 2rem;
       }
 
-      .söksektion {
-        flex-direction: column;
+      .kategoriflikar {
+        gap: 0.4rem;
       }
 
-      .söksektion input,
-      .söksektion select {
-        min-width: 100%;
+      .kategoriflik {
+        padding: 0.4rem 0.85rem;
+        font-size: 0.85rem;
       }
 
       .formulär-knappar {
@@ -488,7 +524,7 @@
   <div class="container">
 
     <!-- ===========================
-         SÖK- OCH FILTERFÄLT
+         SÖKFÄLT
          =========================== -->
     <section class="söksektion">
       <input
@@ -497,11 +533,20 @@
         placeholder="Sök på namn eller ingrediens..."
         aria-label="Sök recept"
       >
-      <select id="kategorifilter" aria-label="Filtrera på kategori">
-        <option value="">Alla kategorier</option>
-        <!-- Fylls dynamiskt med JavaScript -->
-      </select>
     </section>
+
+    <!-- ===========================
+         KATEGORIFLIKAR
+         Fasta kategorier som klickbara knappar
+         =========================== -->
+    <nav class="kategoriflikar" id="kategoriflikar" aria-label="Filtrera på kategori">
+      <button class="kategoriflik aktiv" data-kategori="" type="button">Alla</button>
+      <button class="kategoriflik" data-kategori="Frukost" type="button">Frukost</button>
+      <button class="kategoriflik" data-kategori="Lunch" type="button">Lunch</button>
+      <button class="kategoriflik" data-kategori="Middag" type="button">Middag</button>
+      <button class="kategoriflik" data-kategori="Fika" type="button">Fika</button>
+      <button class="kategoriflik" data-kategori="Dessert" type="button">Dessert</button>
+    </nav>
 
     <!-- Knapp för att visa/dölja formuläret -->
     <button class="knapp knapp-primär visa-formulär-knapp" id="visaFormulärKnapp" type="button">
@@ -526,14 +571,11 @@
           <label for="receptKategori">Kategori *</label>
           <select id="receptKategori" required>
             <option value="">Välj kategori...</option>
-            <option value="Förrätt">Förrätt</option>
-            <option value="Huvudrätt">Huvudrätt</option>
-            <option value="Efterrätt">Efterrätt</option>
-            <option value="Soppa">Soppa</option>
-            <option value="Sallad">Sallad</option>
-            <option value="Bakning">Bakning</option>
-            <option value="Dryck">Dryck</option>
-            <option value="Övrigt">Övrigt</option>
+            <option value="Frukost">Frukost</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Middag">Middag</option>
+            <option value="Fika">Fika</option>
+            <option value="Dessert">Dessert</option>
           </select>
         </div>
 
@@ -593,7 +635,7 @@
 
       // --- DOM-ELEMENT ---
       const sökfält = document.getElementById('sökfält');
-      const kategorifilter = document.getElementById('kategorifilter');
+      const kategoriflikarEl = document.getElementById('kategoriflikar');
       const visaFormulärKnapp = document.getElementById('visaFormulärKnapp');
       const formulärWrapper = document.getElementById('formulärWrapper');
       const formulärRubrik = document.getElementById('formulärRubrik');
@@ -751,16 +793,19 @@
       // Visa recept som kort i listan
       // ===========================
 
+      // --- AKTIV KATEGORI ---
+      // Håller koll på vilken kategoriflik som är vald (tom sträng = "Alla")
+      let aktivKategori = '';
+
       /** Rendera hela receptlistan baserat på aktuellt sök-/filterval */
       function renderaRecept() {
         const recept = hämtaRecept();
         const sökterm = sökfält.value.trim().toLowerCase();
-        const valdKategori = kategorifilter.value;
 
-        // Filtrera recept baserat på sökterm och kategori
+        // Filtrera recept baserat på sökterm och aktiv kategoriflik
         const filtrerade = recept.filter(r => {
-          // Matcha kategori (om vald)
-          const kategoriMatch = !valdKategori || r.kategori === valdKategori;
+          // Matcha kategori (om en specifik flik är vald)
+          const kategoriMatch = !aktivKategori || r.kategori === aktivKategori;
 
           // Matcha sökterm mot namn eller ingredienser
           const söktermMatch = !sökterm ||
@@ -815,27 +860,8 @@
         `).join('');
       }
 
-      /** Uppdatera kategorifilter-dropdown:en med alla unika kategorier */
-      function uppdateraKategorifilter() {
-        const recept = hämtaRecept();
-        const valtVärde = kategorifilter.value;
-
-        // Samla alla unika kategorier
-        const kategorier = [...new Set(recept.map(r => r.kategori))].sort();
-
-        // Bygg options-element
-        kategorifilter.innerHTML = '<option value="">Alla kategorier</option>' +
-          kategorier.map(k => `<option value="${escapeHtml(k)}">${escapeHtml(k)}</option>`).join('');
-
-        // Återställ valt värde om det fortfarande finns
-        if (kategorier.includes(valtVärde)) {
-          kategorifilter.value = valtVärde;
-        }
-      }
-
-      /** Rendera allt – både kategorifilter och receptlista */
+      /** Rendera allt – uppdatera receptlistan */
       function renderaAllt() {
-        uppdateraKategorifilter();
         renderaRecept();
       }
 
@@ -953,8 +979,22 @@
         sökTimer = setTimeout(renderaRecept, 200);
       });
 
-      // Filtrera direkt vid kategoriändring
-      kategorifilter.addEventListener('change', renderaRecept);
+      // Hantera klick på kategoriflikar (delegerat till föräldraelementet)
+      kategoriflikarEl.addEventListener('click', function (e) {
+        const flik = e.target.closest('.kategoriflik');
+        if (!flik) return;
+
+        // Uppdatera aktiv kategori
+        aktivKategori = flik.dataset.kategori;
+
+        // Markera rätt flik som aktiv
+        kategoriflikarEl.querySelectorAll('.kategoriflik').forEach(f => {
+          f.classList.toggle('aktiv', f === flik);
+        });
+
+        // Filtrera om receptlistan
+        renderaRecept();
+      });
 
       // ===========================
       // INITIERING
