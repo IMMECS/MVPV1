@@ -386,6 +386,57 @@
       white-space: pre-line;
     }
 
+    /* Favoritknapp (stjärna) */
+    .favorit-knapp {
+      background: none;
+      border: none;
+      font-size: 1.35rem;
+      cursor: pointer;
+      padding: 0.1rem 0.3rem;
+      line-height: 1;
+      transition: transform var(--övergång);
+      flex-shrink: 0;
+    }
+
+    .favorit-knapp:hover {
+      transform: scale(1.25);
+    }
+
+    .favorit-knapp:active {
+      transform: scale(0.95);
+    }
+
+    /* Favoritfilter-knapp */
+    .favorit-filter {
+      padding: 0.5rem 1.1rem;
+      border: 2px solid var(--färg-ram);
+      border-radius: 99px;
+      background: var(--färg-kort);
+      color: var(--färg-text-ljus);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--övergång);
+      font-family: inherit;
+    }
+
+    .favorit-filter:hover {
+      border-color: var(--färg-primär);
+      color: var(--färg-primär-mörk);
+    }
+
+    .favorit-filter.aktiv {
+      background: var(--färg-primär);
+      border-color: var(--färg-primär);
+      color: white;
+    }
+
+    .favorit-filter.aktiv:hover {
+      background: var(--färg-primär-mörk);
+      border-color: var(--färg-primär-mörk);
+      color: white;
+    }
+
     /* Åtgärdsknappar i kortet */
     .kort-åtgärder {
       display: flex;
@@ -546,6 +597,7 @@
       <button class="kategoriflik" data-kategori="Middag" type="button">Middag</button>
       <button class="kategoriflik" data-kategori="Fika" type="button">Fika</button>
       <button class="kategoriflik" data-kategori="Dessert" type="button">Dessert</button>
+      <button class="favorit-filter" id="favoritFilter" type="button">&#9733; Favoriter</button>
     </nav>
 
     <!-- Knapp för att visa/dölja formuläret -->
@@ -648,6 +700,9 @@
       const sparaKnapp = document.getElementById('sparaKnapp');
       const avbrytKnapp = document.getElementById('avbrytKnapp');
       const receptlistaEl = document.getElementById('receptlista');
+
+      // --- FAVORITFILTER ---
+      const favoritFilterKnapp = document.getElementById('favoritFilter');
 
       // --- MODAL-ELEMENT ---
       const bekräftelseModal = document.getElementById('bekräftelseModal');
@@ -796,13 +851,14 @@
       // --- AKTIV KATEGORI ---
       // Håller koll på vilken kategoriflik som är vald (tom sträng = "Alla")
       let aktivKategori = '';
+      let visaBaraFavoriter = false;
 
       /** Rendera hela receptlistan baserat på aktuellt sök-/filterval */
       function renderaRecept() {
         const recept = hämtaRecept();
         const sökterm = sökfält.value.trim().toLowerCase();
 
-        // Filtrera recept baserat på sökterm och aktiv kategoriflik
+        // Filtrera recept baserat på sökterm, aktiv kategoriflik och favoritfilter
         const filtrerade = recept.filter(r => {
           // Matcha kategori (om en specifik flik är vald)
           const kategoriMatch = !aktivKategori || r.kategori === aktivKategori;
@@ -812,7 +868,17 @@
             r.namn.toLowerCase().includes(sökterm) ||
             r.ingredienser.some(i => i.toLowerCase().includes(sökterm));
 
-          return kategoriMatch && söktermMatch;
+          // Matcha favoritfilter
+          const favoritMatch = !visaBaraFavoriter || r.favorit;
+
+          return kategoriMatch && söktermMatch && favoritMatch;
+        });
+
+        // Sortera favoriter högst upp
+        filtrerade.sort((a, b) => {
+          if (a.favorit && !b.favorit) return -1;
+          if (!a.favorit && b.favorit) return 1;
+          return 0;
         });
 
         // Visa meddelande om inga recept matchar
@@ -822,6 +888,13 @@
               <div class="tomt-meddelande">
                 <span>&#128214;</span>
                 Inga recept ännu. Klicka på "Nytt recept" för att komma igång!
+              </div>
+            `;
+          } else if (visaBaraFavoriter) {
+            receptlistaEl.innerHTML = `
+              <div class="tomt-meddelande">
+                <span>&#9733;</span>
+                Inga favoriter ännu. Klicka på stjärnan vid ett recept för att lägga till det som favorit!
               </div>
             `;
           } else {
@@ -839,6 +912,7 @@
         receptlistaEl.innerHTML = filtrerade.map(r => `
           <article class="receptkort" data-id="${r.id}">
             <div class="kort-huvud" onclick="växlaKort('${r.id}')">
+              <button class="favorit-knapp" onclick="event.stopPropagation(); växlaFavorit('${r.id}')" aria-label="${r.favorit ? 'Ta bort favorit' : 'Markera som favorit'}" title="${r.favorit ? 'Ta bort favorit' : 'Markera som favorit'}">${r.favorit ? '&#9733;' : '&#9734;'}</button>
               <span class="kort-titel">${escapeHtml(r.namn)}</span>
               <span class="kort-kategori">${escapeHtml(r.kategori)}</span>
             </div>
@@ -881,6 +955,16 @@
         } else {
           innehåll.style.maxHeight = innehåll.scrollHeight + 'px';
         }
+      };
+
+      /** Växla favoritstatus för ett recept */
+      window.växlaFavorit = function (id) {
+        const recept = hämtaRecept();
+        const index = recept.findIndex(r => r.id === id);
+        if (index === -1) return;
+        recept[index].favorit = !recept[index].favorit;
+        sparaRecept(recept);
+        renderaAllt();
       };
 
       /** Öppna formuläret i redigeringsläge för ett specifikt recept */
@@ -993,6 +1077,13 @@
         });
 
         // Filtrera om receptlistan
+        renderaRecept();
+      });
+
+      // Hantera klick på favoritfilter-knappen
+      favoritFilterKnapp.addEventListener('click', function () {
+        visaBaraFavoriter = !visaBaraFavoriter;
+        favoritFilterKnapp.classList.toggle('aktiv', visaBaraFavoriter);
         renderaRecept();
       });
 
