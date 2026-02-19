@@ -7,7 +7,6 @@
   <style>
     /* ===========================
        GRUNDLÄGGANDE STILAR
-       Mjuk färgpalett och typografi
        =========================== */
     *,
     *::before,
@@ -18,7 +17,6 @@
     }
 
     :root {
-      /* Mjuka, varma färger */
       --färg-bakgrund: #faf7f2;
       --färg-kort: #ffffff;
       --färg-primär: #d4a574;
@@ -101,14 +99,14 @@
     }
 
     /* ===========================
-       KATEGORIFLIKAR
-       Klickbara knappar för filtrering
+       KATEGORIFLIKAR + SORTERING
        =========================== */
     .kategoriflikar {
       display: flex;
       gap: 0.5rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     .kategoriflik {
@@ -129,7 +127,6 @@
       color: var(--färg-primär-mörk);
     }
 
-    /* Aktiv/vald flik */
     .kategoriflik.aktiv {
       background: var(--färg-primär);
       border-color: var(--färg-primär);
@@ -140,6 +137,40 @@
       background: var(--färg-primär-mörk);
       border-color: var(--färg-primär-mörk);
       color: white;
+    }
+
+    /* Sorteringsval */
+    .sortering-val {
+      padding: 0.5rem 0.9rem;
+      border: 2px solid var(--färg-ram);
+      border-radius: 99px;
+      background: var(--färg-kort);
+      color: var(--färg-text-ljus);
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      margin-left: auto;
+      transition: border-color var(--övergång), color var(--övergång);
+    }
+
+    .sortering-val:focus {
+      outline: none;
+      border-color: var(--färg-primär);
+    }
+
+    .sortering-val:hover {
+      border-color: var(--färg-primär);
+      color: var(--färg-primär-mörk);
+    }
+
+    /* Recepträknare */
+    .recepträknare {
+      font-size: 0.88rem;
+      color: var(--färg-text-ljus);
+      margin-bottom: 0.75rem;
+      min-height: 1.3rem;
+      text-align: right;
     }
 
     /* ===========================
@@ -195,8 +226,7 @@
     }
 
     /* ===========================
-       LÄGG TILL-KNAPP (FLYTANDE)
-       Visar/döljer formuläret
+       LÄGG TILL-KNAPP
        =========================== */
     .visa-formulär-knapp {
       width: 100%;
@@ -214,7 +244,6 @@
       box-shadow: var(--skugga);
       padding: 1.5rem;
       margin-bottom: 1.5rem;
-      /* Animerad visning/döljning */
       max-height: 0;
       overflow: hidden;
       opacity: 0;
@@ -225,7 +254,7 @@
     }
 
     .formulär-wrapper.synlig {
-      max-height: 800px;
+      max-height: 1400px;
       opacity: 1;
       padding: 1.5rem;
       margin-bottom: 1.5rem;
@@ -275,6 +304,31 @@
       resize: vertical;
     }
 
+    /* Inline valideringsfel */
+    .fält-fel {
+      border-color: var(--färg-fara) !important;
+    }
+
+    .fält-felmeddelande {
+      color: var(--färg-fara);
+      font-size: 0.82rem;
+      margin-top: 0.3rem;
+      min-height: 1.1rem;
+      display: block;
+    }
+
+    /* 2-kolumns rad för metadatafält (portioner + tid) */
+    .formulär-grupp-rad {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .formulär-grupp-rad .formulär-grupp {
+      margin-bottom: 0;
+    }
+
     .formulär-knappar {
       display: flex;
       gap: 0.75rem;
@@ -289,7 +343,6 @@
       gap: 1rem;
     }
 
-    /* Tomt tillstånd */
     .tomt-meddelande {
       text-align: center;
       padding: 3rem 1rem;
@@ -318,7 +371,6 @@
       box-shadow: var(--skugga-hover);
     }
 
-    /* Kortets rubrikrad */
     .kort-huvud {
       display: flex;
       justify-content: space-between;
@@ -336,6 +388,7 @@
     .kort-titel {
       font-size: 1.15rem;
       font-weight: 700;
+      flex: 1;
     }
 
     .kort-kategori {
@@ -349,7 +402,6 @@
       flex-shrink: 0;
     }
 
-    /* Expanderbart innehåll i kortet */
     .kort-innehåll {
       max-height: 0;
       overflow: hidden;
@@ -358,6 +410,16 @@
 
     .kort-innehåll-inre {
       padding: 0 1.25rem 1.25rem;
+    }
+
+    /* Metadatarad i kortet (portioner + tid) */
+    .kort-meta-rad {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--färg-text-ljus);
+      padding: 0.4rem 0 0.75rem;
+      flex-wrap: wrap;
     }
 
     .kort-innehåll h3 {
@@ -382,6 +444,17 @@
     }
 
     .kort-innehåll p {
+      color: var(--färg-text-ljus);
+      white-space: pre-line;
+    }
+
+    /* Anteckningar */
+    .antecknings-text {
+      font-style: italic;
+      background: var(--färg-primär-ljus);
+      border-left: 3px solid var(--färg-primär);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0 4px 4px 0;
       color: var(--färg-text-ljus);
       white-space: pre-line;
     }
@@ -444,14 +517,12 @@
       margin-top: 1rem;
       padding-top: 1rem;
       border-top: 1px solid var(--färg-ram);
+      flex-wrap: wrap;
     }
 
     /* ===========================
        BEKRÄFTELSEDIALOG (MODAL)
-       Ersätter webbläsarens confirm()
        =========================== */
-
-    /* Halvgenomskinlig bakgrund som täcker hela sidan */
     .modal-överlägg {
       display: none;
       position: fixed;
@@ -468,7 +539,6 @@
       display: flex;
     }
 
-    /* Själva dialogrutan */
     .modal-dialog {
       background: var(--färg-kort);
       border-radius: var(--rundning);
@@ -511,7 +581,6 @@
       justify-content: center;
     }
 
-    /* Animationer för modalen */
     @keyframes fadaIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -523,8 +592,81 @@
     }
 
     /* ===========================
+       TOAST-NOTIFIERINGAR
+       =========================== */
+    #toastContainer {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--färg-text);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--rundning);
+      font-size: 0.92rem;
+      box-shadow: var(--skugga-hover);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      max-width: 280px;
+    }
+
+    .toast.visas {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.lyckades {
+      background: var(--färg-accent-mörk);
+    }
+
+    .toast.fel {
+      background: var(--färg-fara-mörk);
+    }
+
+    /* ===========================
+       EXPORT / IMPORT
+       =========================== */
+    .data-åtgärder {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--färg-ram);
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .knapp-data {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.9rem;
+      border: 2px solid var(--färg-ram);
+      border-radius: var(--rundning);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--färg-kort);
+      color: var(--färg-text-ljus);
+      font-family: inherit;
+      transition: border-color var(--övergång), color var(--övergång);
+    }
+
+    .knapp-data:hover {
+      border-color: var(--färg-primär);
+      color: var(--färg-primär-mörk);
+    }
+
+    /* ===========================
        RESPONSIV DESIGN
-       Anpassningar för mobil
        =========================== */
     @media (max-width: 600px) {
       header h1 {
@@ -548,6 +690,10 @@
         font-size: 0.85rem;
       }
 
+      .formulär-grupp-rad {
+        grid-template-columns: 1fr;
+      }
+
       .formulär-knappar {
         flex-direction: column;
       }
@@ -558,6 +704,21 @@
 
       .kort-huvud {
         flex-wrap: wrap;
+      }
+
+      .sortering-val {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      #toastContainer {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+      }
+
+      .toast {
+        max-width: 100%;
       }
     }
   </style>
@@ -587,8 +748,7 @@
     </section>
 
     <!-- ===========================
-         KATEGORIFLIKAR
-         Fasta kategorier som klickbara knappar
+         KATEGORIFLIKAR + SORTERING
          =========================== -->
     <nav class="kategoriflikar" id="kategoriflikar" aria-label="Filtrera på kategori">
       <button class="kategoriflik aktiv" data-kategori="" type="button">Alla</button>
@@ -597,8 +757,18 @@
       <button class="kategoriflik" data-kategori="Middag" type="button">Middag</button>
       <button class="kategoriflik" data-kategori="Fika" type="button">Fika</button>
       <button class="kategoriflik" data-kategori="Dessert" type="button">Dessert</button>
-      <button class="favorit-filter" id="favoritFilter" type="button">&#9733; Favoriter</button>
+      <button class="favorit-filter" id="favoritFilter" type="button" aria-label="Visa bara favoriter">&#9733; Favoriter</button>
+      <select id="sortering" class="sortering-val" aria-label="Sortera recept">
+        <option value="favoriter">Favoriter först</option>
+        <option value="az">Namn A–Ö</option>
+        <option value="za">Namn Ö–A</option>
+        <option value="nyast">Nyast tillagda</option>
+        <option value="äldst">Äldst tillagda</option>
+      </select>
     </nav>
+
+    <!-- Recepträknare -->
+    <div class="recepträknare" id="recepträknare"></div>
 
     <!-- Knapp för att visa/dölja formuläret -->
     <button class="knapp knapp-primär visa-formulär-knapp" id="visaFormulärKnapp" type="button">
@@ -611,17 +781,17 @@
     <div class="formulär-wrapper" id="formulärWrapper">
       <h2 id="formulärRubrik">Lägg till nytt recept</h2>
       <form id="receptFormulär" novalidate>
-        <!-- Dolt fält för att hålla koll på redigerings-ID -->
         <input type="hidden" id="redigeraId">
 
         <div class="formulär-grupp">
           <label for="receptNamn">Namn på receptet *</label>
-          <input type="text" id="receptNamn" placeholder="T.ex. Köttbullar" required>
+          <input type="text" id="receptNamn" placeholder="T.ex. Köttbullar">
+          <span class="fält-felmeddelande" id="fel-namn"></span>
         </div>
 
         <div class="formulär-grupp">
           <label for="receptKategori">Kategori *</label>
-          <select id="receptKategori" required>
+          <select id="receptKategori">
             <option value="">Välj kategori...</option>
             <option value="Frukost">Frukost</option>
             <option value="Lunch">Lunch</option>
@@ -629,16 +799,37 @@
             <option value="Fika">Fika</option>
             <option value="Dessert">Dessert</option>
           </select>
+          <span class="fält-felmeddelande" id="fel-kategori"></span>
+        </div>
+
+        <!-- Valfria metadatafält: portioner och tid -->
+        <div class="formulär-grupp-rad">
+          <div class="formulär-grupp">
+            <label for="receptPortioner">Portioner</label>
+            <input type="number" id="receptPortioner" min="1" max="999" placeholder="T.ex. 4">
+          </div>
+          <div class="formulär-grupp">
+            <label for="receptTid">Tid (minuter)</label>
+            <input type="number" id="receptTid" min="1" max="9999" placeholder="T.ex. 30">
+          </div>
         </div>
 
         <div class="formulär-grupp">
           <label for="receptIngredienser">Ingredienser * (en per rad)</label>
-          <textarea id="receptIngredienser" placeholder="3 dl vetemjöl&#10;2 ägg&#10;5 dl mjölk" required></textarea>
+          <textarea id="receptIngredienser" placeholder="3 dl vetemjöl&#10;2 ägg&#10;5 dl mjölk"></textarea>
+          <span class="fält-felmeddelande" id="fel-ingredienser"></span>
         </div>
 
         <div class="formulär-grupp">
           <label for="receptInstruktioner">Instruktioner *</label>
-          <textarea id="receptInstruktioner" placeholder="Beskriv steg för steg hur man lagar rätten..." required></textarea>
+          <textarea id="receptInstruktioner" placeholder="Beskriv steg för steg hur man lagar rätten..."></textarea>
+          <span class="fält-felmeddelande" id="fel-instruktioner"></span>
+        </div>
+
+        <!-- Valfritt anteckningsfält -->
+        <div class="formulär-grupp">
+          <label for="receptAnteckningar">Personliga anteckningar</label>
+          <textarea id="receptAnteckningar" placeholder="T.ex. Dubbla receptet fungerar bra, byt smör mot olja för vegansk variant..."></textarea>
         </div>
 
         <div class="formulär-knappar">
@@ -650,17 +841,24 @@
 
     <!-- ===========================
          RECEPTLISTA
-         Här renderas alla receptkort
          =========================== -->
     <div class="receptlista" id="receptlista">
       <!-- Fylls dynamiskt av JavaScript -->
+    </div>
+
+    <!-- ===========================
+         EXPORT / IMPORT
+         =========================== -->
+    <div class="data-åtgärder">
+      <button class="knapp-data" id="exporteraKnapp" type="button">&#8595; Exportera recept</button>
+      <button class="knapp-data" id="importeraKnapp" type="button">&#8593; Importera recept</button>
+      <input type="file" id="importeraFil" accept=".json" style="display:none">
     </div>
 
   </div>
 
   <!-- ===========================
        BEKRÄFTELSEDIALOG (MODAL)
-       Visas vid borttagning av recept
        =========================== -->
   <div class="modal-överlägg" id="bekräftelseModal">
     <div class="modal-dialog">
@@ -676,10 +874,12 @@
     </div>
   </div>
 
+  <!-- Toast-container för notifieringar -->
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
   <script>
     // ===========================
     // RECEPTSAMLING – JAVASCRIPT
-    // All logik för att hantera recept
     // ===========================
 
     (function () {
@@ -695,94 +895,178 @@
       const redigeraIdFält = document.getElementById('redigeraId');
       const receptNamnFält = document.getElementById('receptNamn');
       const receptKategoriFält = document.getElementById('receptKategori');
+      const receptPortionerFält = document.getElementById('receptPortioner');
+      const receptTidFält = document.getElementById('receptTid');
       const receptIngredienserFält = document.getElementById('receptIngredienser');
       const receptInstruktionerFält = document.getElementById('receptInstruktioner');
+      const receptAnteckningarFält = document.getElementById('receptAnteckningar');
       const sparaKnapp = document.getElementById('sparaKnapp');
       const avbrytKnapp = document.getElementById('avbrytKnapp');
       const receptlistaEl = document.getElementById('receptlista');
-
-      // --- FAVORITFILTER ---
+      const recepträknareEl = document.getElementById('recepträknare');
+      const toastContainerEl = document.getElementById('toastContainer');
       const favoritFilterKnapp = document.getElementById('favoritFilter');
-
-      // --- MODAL-ELEMENT ---
+      const sorteringEl = document.getElementById('sortering');
       const bekräftelseModal = document.getElementById('bekräftelseModal');
       const modalText = document.getElementById('modalText');
       const modalBekräfta = document.getElementById('modalBekräfta');
       const modalAvbryt = document.getElementById('modalAvbryt');
 
-      // --- NYCKEL FÖR LOCALSTORAGE ---
       const STORAGE_NYCKEL = 'receptsamling_recept';
 
       // ===========================
       // DATAHANTERING
-      // Läs och skriv recept till localStorage
       // ===========================
 
-      /** Hämta alla recept från localStorage */
       function hämtaRecept() {
         try {
           const data = localStorage.getItem(STORAGE_NYCKEL);
           return data ? JSON.parse(data) : [];
         } catch {
-          // Om datan är korrupt, börja med tom lista
           return [];
         }
       }
 
-      /** Spara alla recept till localStorage */
       function sparaRecept(recept) {
-        localStorage.setItem(STORAGE_NYCKEL, JSON.stringify(recept));
+        try {
+          localStorage.setItem(STORAGE_NYCKEL, JSON.stringify(recept));
+        } catch {
+          visaToast('Kunde inte spara – lagringsutrymmet är fullt.', 'fel');
+        }
       }
 
-      /** Skapa ett unikt ID baserat på tidsstämpel + slumpmässig sträng */
       function skapaId() {
         return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
       }
 
       // ===========================
-      // FORMULÄRHANTERING
-      // Visa, dölja och hantera formuläret
+      // TOAST-NOTIFIERINGAR
       // ===========================
 
-      /** Visa formuläret med valfri animation */
+      function visaToast(text, typ, varaktighet) {
+        typ = typ || 'lyckades';
+        varaktighet = varaktighet || 2800;
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + typ;
+        toast.textContent = text;
+        toastContainerEl.appendChild(toast);
+        // Dubbel rAF krävs för att CSS-transition ska triggas korrekt
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            toast.classList.add('visas');
+          });
+        });
+        setTimeout(function () {
+          toast.classList.remove('visas');
+          toast.addEventListener('transitionend', function () {
+            toast.remove();
+          }, { once: true });
+        }, varaktighet);
+      }
+
+      // ===========================
+      // FORMULÄRVALIDERING (inline)
+      // ===========================
+
+      function rensaFältFel(fältEl, felspanEl) {
+        fältEl.classList.remove('fält-fel');
+        felspanEl.textContent = '';
+      }
+
+      function rensaAllaFelmeddelanden() {
+        var fältPar = [
+          [receptNamnFält, document.getElementById('fel-namn')],
+          [receptKategoriFält, document.getElementById('fel-kategori')],
+          [receptIngredienserFält, document.getElementById('fel-ingredienser')],
+          [receptInstruktionerFält, document.getElementById('fel-instruktioner')]
+        ];
+        fältPar.forEach(function (par) { rensaFältFel(par[0], par[1]); });
+      }
+
+      function visaFältFel(fältEl, felspanEl, text) {
+        fältEl.classList.add('fält-fel');
+        felspanEl.textContent = text;
+      }
+
+      function valideraFormulär(namn, kategori, ingredienserRå, instruktioner) {
+        rensaAllaFelmeddelanden();
+        var giltigt = true;
+
+        if (!namn) {
+          visaFältFel(receptNamnFält, document.getElementById('fel-namn'), 'Ange ett namn på receptet.');
+          giltigt = false;
+        }
+        if (!kategori) {
+          visaFältFel(receptKategoriFält, document.getElementById('fel-kategori'), 'Välj en kategori.');
+          giltigt = false;
+        }
+        if (!ingredienserRå) {
+          visaFältFel(receptIngredienserFält, document.getElementById('fel-ingredienser'), 'Ange minst en ingrediens.');
+          giltigt = false;
+        }
+        if (!instruktioner) {
+          visaFältFel(receptInstruktionerFält, document.getElementById('fel-instruktioner'), 'Ange instruktioner för receptet.');
+          giltigt = false;
+        }
+
+        if (!giltigt) {
+          var förstaFel = receptFormulär.querySelector('.fält-fel');
+          if (förstaFel) förstaFel.focus();
+        }
+        return giltigt;
+      }
+
+      // Rensa fältfel i realtid när användaren skriver
+      receptNamnFält.addEventListener('input', function () {
+        rensaFältFel(this, document.getElementById('fel-namn'));
+      });
+      receptKategoriFält.addEventListener('change', function () {
+        rensaFältFel(this, document.getElementById('fel-kategori'));
+      });
+      receptIngredienserFält.addEventListener('input', function () {
+        rensaFältFel(this, document.getElementById('fel-ingredienser'));
+      });
+      receptInstruktionerFält.addEventListener('input', function () {
+        rensaFältFel(this, document.getElementById('fel-instruktioner'));
+      });
+
+      // ===========================
+      // FORMULÄRHANTERING
+      // ===========================
+
       function visaFormulär() {
         formulärWrapper.classList.add('synlig');
         visaFormulärKnapp.style.display = 'none';
-        // Fokusera på namnfältet
-        setTimeout(() => receptNamnFält.focus(), 300);
+        setTimeout(function () { receptNamnFält.focus(); }, 300);
       }
 
-      /** Dölj formuläret och nollställ alla fält */
       function döljFormulär() {
         formulärWrapper.classList.remove('synlig');
         visaFormulärKnapp.style.display = '';
         nollställFormulär();
       }
 
-      /** Nollställ alla formulärfält och återställ rubrik */
       function nollställFormulär() {
         receptFormulär.reset();
         redigeraIdFält.value = '';
         formulärRubrik.textContent = 'Lägg till nytt recept';
         sparaKnapp.textContent = 'Spara recept';
+        rensaAllaFelmeddelanden();
       }
 
-      /** Fyll formuläret med data från ett befintligt recept (för redigering) */
       function fyllFormulärMedRecept(recept) {
         redigeraIdFält.value = recept.id;
         receptNamnFält.value = recept.namn;
         receptKategoriFält.value = recept.kategori;
+        receptPortionerFält.value = recept.portioner || '';
+        receptTidFält.value = recept.tid || '';
         receptIngredienserFält.value = recept.ingredienser.join('\n');
         receptInstruktionerFält.value = recept.instruktioner;
+        receptAnteckningarFält.value = recept.anteckningar || '';
         formulärRubrik.textContent = 'Redigera recept';
         sparaKnapp.textContent = 'Uppdatera recept';
       }
 
-      // ===========================
-      // HÄNDELSEHANTERARE FÖR FORMULÄRET
-      // ===========================
-
-      // Visa/dölj formuläret
       visaFormulärKnapp.addEventListener('click', visaFormulär);
       avbrytKnapp.addEventListener('click', döljFormulär);
 
@@ -790,166 +1074,201 @@
       receptFormulär.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        // Läs in värden från formuläret
-        const namn = receptNamnFält.value.trim();
-        const kategori = receptKategoriFält.value;
-        const ingredienserRå = receptIngredienserFält.value.trim();
-        const instruktioner = receptInstruktionerFält.value.trim();
+        var namn = receptNamnFält.value.trim();
+        var kategori = receptKategoriFält.value;
+        var ingredienserRå = receptIngredienserFält.value.trim();
+        var instruktioner = receptInstruktionerFält.value.trim();
+        var portioner = parseInt(receptPortionerFält.value, 10) || null;
+        var tid = parseInt(receptTidFält.value, 10) || null;
+        var anteckningar = receptAnteckningarFält.value.trim() || null;
 
-        // Enkel validering – alla fält måste fyllas i
-        if (!namn || !kategori || !ingredienserRå || !instruktioner) {
-          alert('Vänligen fyll i alla fält.');
+        if (!valideraFormulär(namn, kategori, ingredienserRå, instruktioner)) {
           return;
         }
 
-        // Omvandla ingredienser från text till lista (dela på radbrytningar)
-        const ingredienser = ingredienserRå
+        var ingredienser = ingredienserRå
           .split('\n')
-          .map(rad => rad.trim())
-          .filter(rad => rad.length > 0);
+          .map(function (rad) { return rad.trim(); })
+          .filter(function (rad) { return rad.length > 0; });
 
-        const recept = hämtaRecept();
-        const redigeraId = redigeraIdFält.value;
+        var recept = hämtaRecept();
+        var redigeraId = redigeraIdFält.value;
 
         if (redigeraId) {
-          // --- UPPDATERA BEFINTLIGT RECEPT ---
-          const index = recept.findIndex(r => r.id === redigeraId);
+          // Uppdatera befintligt recept
+          var index = recept.findIndex(function (r) { return r.id === redigeraId; });
           if (index !== -1) {
-            recept[index] = {
-              ...recept[index],
-              namn,
-              kategori,
-              ingredienser,
-              instruktioner,
+            recept[index] = Object.assign({}, recept[index], {
+              namn: namn,
+              kategori: kategori,
+              portioner: portioner,
+              tid: tid,
+              ingredienser: ingredienser,
+              instruktioner: instruktioner,
+              anteckningar: anteckningar,
               uppdaterad: new Date().toISOString()
-            };
+            });
           }
+          sparaRecept(recept);
+          döljFormulär();
+          renderaAllt();
+          visaToast('Receptet uppdaterades!');
         } else {
-          // --- SKAPA NYTT RECEPT ---
+          // Skapa nytt recept
           recept.push({
             id: skapaId(),
-            namn,
-            kategori,
-            ingredienser,
-            instruktioner,
+            namn: namn,
+            kategori: kategori,
+            portioner: portioner,
+            tid: tid,
+            ingredienser: ingredienser,
+            instruktioner: instruktioner,
+            anteckningar: anteckningar,
             skapad: new Date().toISOString(),
-            uppdaterad: new Date().toISOString()
+            uppdaterad: new Date().toISOString(),
+            favorit: false
           });
+          sparaRecept(recept);
+          döljFormulär();
+          renderaAllt();
+          visaToast('Recept sparat!');
         }
-
-        // Spara och uppdatera vyn
-        sparaRecept(recept);
-        döljFormulär();
-        renderaAllt();
       });
 
       // ===========================
-      // RENDERING
-      // Visa recept som kort i listan
+      // HJÄLPFUNKTIONER
       // ===========================
 
-      // --- AKTIV KATEGORI ---
-      // Håller koll på vilken kategoriflik som är vald (tom sträng = "Alla")
-      let aktivKategori = '';
-      let visaBaraFavoriter = false;
+      function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
 
-      /** Rendera hela receptlistan baserat på aktuellt sök-/filterval */
+      function formateraTid(minuter) {
+        if (minuter < 60) return minuter + ' min';
+        var h = Math.floor(minuter / 60);
+        var min = minuter % 60;
+        return min ? h + ' h ' + min + ' min' : h + ' h';
+      }
+
+      // ===========================
+      // RENDERING
+      // ===========================
+
+      var aktivKategori = '';
+      var visaBaraFavoriter = false;
+      var aktivSortering = 'favoriter';
+
       function renderaRecept() {
-        const recept = hämtaRecept();
-        const sökterm = sökfält.value.trim().toLowerCase();
+        var recept = hämtaRecept();
+        var sökterm = sökfält.value.trim().toLowerCase();
+        var totalt = recept.length;
 
-        // Filtrera recept baserat på sökterm, aktiv kategoriflik och favoritfilter
-        const filtrerade = recept.filter(r => {
-          // Matcha kategori (om en specifik flik är vald)
-          const kategoriMatch = !aktivKategori || r.kategori === aktivKategori;
-
-          // Matcha sökterm mot namn eller ingredienser
-          const söktermMatch = !sökterm ||
+        var filtrerade = recept.filter(function (r) {
+          var kategoriMatch = !aktivKategori || r.kategori === aktivKategori;
+          var söktermMatch = !sökterm ||
             r.namn.toLowerCase().includes(sökterm) ||
-            r.ingredienser.some(i => i.toLowerCase().includes(sökterm));
-
-          // Matcha favoritfilter
-          const favoritMatch = !visaBaraFavoriter || r.favorit;
-
+            r.ingredienser.some(function (i) { return i.toLowerCase().includes(sökterm); });
+          var favoritMatch = !visaBaraFavoriter || r.favorit;
           return kategoriMatch && söktermMatch && favoritMatch;
         });
 
-        // Sortera favoriter högst upp
-        filtrerade.sort((a, b) => {
-          if (a.favorit && !b.favorit) return -1;
-          if (!a.favorit && b.favorit) return 1;
-          return 0;
+        // Sortera baserat på aktivt val
+        filtrerade.sort(function (a, b) {
+          switch (aktivSortering) {
+            case 'favoriter':
+              if (a.favorit && !b.favorit) return -1;
+              if (!a.favorit && b.favorit) return 1;
+              return 0;
+            case 'az':
+              return a.namn.localeCompare(b.namn, 'sv');
+            case 'za':
+              return b.namn.localeCompare(a.namn, 'sv');
+            case 'nyast':
+              return new Date(b.skapad || 0) - new Date(a.skapad || 0);
+            case 'äldst':
+              return new Date(a.skapad || 0) - new Date(b.skapad || 0);
+            default:
+              return 0;
+          }
         });
+
+        // Uppdatera recepträknaren
+        if (totalt === 0) {
+          recepträknareEl.textContent = '';
+        } else if (filtrerade.length === totalt) {
+          recepträknareEl.textContent = totalt + ' recept';
+        } else {
+          recepträknareEl.textContent = 'Visar ' + filtrerade.length + ' av ' + totalt + ' recept';
+        }
 
         // Visa meddelande om inga recept matchar
         if (filtrerade.length === 0) {
-          if (recept.length === 0) {
-            receptlistaEl.innerHTML = `
-              <div class="tomt-meddelande">
-                <span>&#128214;</span>
-                Inga recept ännu. Klicka på "Nytt recept" för att komma igång!
-              </div>
-            `;
+          if (totalt === 0) {
+            receptlistaEl.innerHTML = '<div class="tomt-meddelande"><span>&#128214;</span>Inga recept ännu. Klicka på "Nytt recept" för att komma igång!</div>';
           } else if (visaBaraFavoriter) {
-            receptlistaEl.innerHTML = `
-              <div class="tomt-meddelande">
-                <span>&#9733;</span>
-                Inga favoriter ännu. Klicka på stjärnan vid ett recept för att lägga till det som favorit!
-              </div>
-            `;
+            receptlistaEl.innerHTML = '<div class="tomt-meddelande"><span>&#9733;</span>Inga favoriter ännu. Klicka på stjärnan vid ett recept för att lägga till det som favorit!</div>';
           } else {
-            receptlistaEl.innerHTML = `
-              <div class="tomt-meddelande">
-                <span>&#128269;</span>
-                Inga recept matchar din sökning.
-              </div>
-            `;
+            receptlistaEl.innerHTML = '<div class="tomt-meddelande"><span>&#128269;</span>Inga recept matchar din sökning.</div>';
           }
           return;
         }
 
         // Bygg HTML för varje receptkort
-        receptlistaEl.innerHTML = filtrerade.map(r => `
-          <article class="receptkort" data-id="${r.id}">
-            <div class="kort-huvud" onclick="växlaKort('${r.id}')">
-              <button class="favorit-knapp" onclick="event.stopPropagation(); växlaFavorit('${r.id}')" aria-label="${r.favorit ? 'Ta bort favorit' : 'Markera som favorit'}" title="${r.favorit ? 'Ta bort favorit' : 'Markera som favorit'}">${r.favorit ? '&#9733;' : '&#9734;'}</button>
-              <span class="kort-titel">${escapeHtml(r.namn)}</span>
-              <span class="kort-kategori">${escapeHtml(r.kategori)}</span>
-            </div>
-            <div class="kort-innehåll" id="kort-${r.id}">
-              <div class="kort-innehåll-inre">
-                <h3>Ingredienser</h3>
-                <ul>
-                  ${r.ingredienser.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
-                </ul>
-                <h3>Instruktioner</h3>
-                <p>${escapeHtml(r.instruktioner)}</p>
-                <div class="kort-åtgärder">
-                  <button class="knapp knapp-primär knapp-liten" onclick="redigeraRecept('${r.id}')">Redigera</button>
-                  <button class="knapp knapp-fara knapp-liten" onclick="taBortRecept('${r.id}')">Ta bort</button>
-                </div>
-              </div>
-            </div>
-          </article>
-        `).join('');
+        receptlistaEl.innerHTML = filtrerade.map(function (r) {
+          var metaRad = '';
+          if (r.portioner || r.tid) {
+            metaRad = '<div class="kort-meta-rad">' +
+              (r.portioner ? '<span>&#127860; ' + r.portioner + ' port.</span>' : '') +
+              (r.tid ? '<span>&#8987; ' + formateraTid(r.tid) + '</span>' : '') +
+              '</div>';
+          }
+
+          var anteckningar = '';
+          if (r.anteckningar) {
+            anteckningar = '<h3>Anteckningar</h3><p class="antecknings-text">' + escapeHtml(r.anteckningar) + '</p>';
+          }
+
+          return '<article class="receptkort" data-id="' + r.id + '">' +
+            '<div class="kort-huvud" onclick="växlaKort(\'' + r.id + '\')">' +
+            '<button class="favorit-knapp" onclick="event.stopPropagation(); växlaFavorit(\'' + r.id + '\')" ' +
+            'aria-label="' + (r.favorit ? 'Ta bort favorit' : 'Markera som favorit') + '" ' +
+            'title="' + (r.favorit ? 'Ta bort favorit' : 'Markera som favorit') + '">' +
+            (r.favorit ? '&#9733;' : '&#9734;') + '</button>' +
+            '<span class="kort-titel">' + escapeHtml(r.namn) + '</span>' +
+            '<span class="kort-kategori">' + escapeHtml(r.kategori) + '</span>' +
+            '</div>' +
+            '<div class="kort-innehåll" id="kort-' + r.id + '">' +
+            '<div class="kort-innehåll-inre">' +
+            metaRad +
+            '<h3>Ingredienser</h3>' +
+            '<ul>' + r.ingredienser.map(function (i) { return '<li>' + escapeHtml(i) + '</li>'; }).join('') + '</ul>' +
+            '<h3>Instruktioner</h3>' +
+            '<p>' + escapeHtml(r.instruktioner) + '</p>' +
+            anteckningar +
+            '<div class="kort-åtgärder">' +
+            '<button class="knapp knapp-primär knapp-liten" onclick="redigeraRecept(\'' + r.id + '\')">Redigera</button>' +
+            '<button class="knapp knapp-fara knapp-liten" onclick="taBortRecept(\'' + r.id + '\')">Ta bort</button>' +
+            '<button class="knapp knapp-liten" onclick="skrivUtRecept(\'' + r.id + '\')" style="background:var(--färg-ram);color:var(--färg-text);">Skriv ut</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</article>';
+        }).join('');
       }
 
-      /** Rendera allt – uppdatera receptlistan */
       function renderaAllt() {
         renderaRecept();
       }
 
       // ===========================
-      // GLOBALA FUNKTIONER
-      // Behövs för onclick-attribut i dynamisk HTML
+      // GLOBALA FUNKTIONER (onclick-attribut)
       // ===========================
 
-      /** Expandera/kollapsa ett receptkort */
       window.växlaKort = function (id) {
-        const innehåll = document.getElementById('kort-' + id);
+        var innehåll = document.getElementById('kort-' + id);
         if (!innehåll) return;
-
-        // Toggla höjd – 0 = dolt, scrollHeight = visat
         if (innehåll.style.maxHeight) {
           innehåll.style.maxHeight = null;
         } else {
@@ -957,139 +1276,199 @@
         }
       };
 
-      /** Växla favoritstatus för ett recept */
       window.växlaFavorit = function (id) {
-        const recept = hämtaRecept();
-        const index = recept.findIndex(r => r.id === id);
+        var recept = hämtaRecept();
+        var index = recept.findIndex(function (r) { return r.id === id; });
         if (index === -1) return;
         recept[index].favorit = !recept[index].favorit;
         sparaRecept(recept);
         renderaAllt();
+        visaToast(recept[index].favorit ? 'Tillagd som favorit!' : 'Borttagen från favoriter.');
       };
 
-      /** Öppna formuläret i redigeringsläge för ett specifikt recept */
       window.redigeraRecept = function (id) {
-        const recept = hämtaRecept().find(r => r.id === id);
+        var recept = hämtaRecept().find(function (r) { return r.id === id; });
         if (!recept) return;
-
         fyllFormulärMedRecept(recept);
         visaFormulär();
-
-        // Scrolla upp till formuläret
         formulärWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+
+      window.skrivUtRecept = function (id) {
+        var r = hämtaRecept().find(function (rec) { return rec.id === id; });
+        if (!r) return;
+
+        var metaRader = [
+          r.portioner ? r.portioner + ' portioner' : '',
+          r.tid ? formateraTid(r.tid) : ''
+        ].filter(Boolean).join(' · ');
+
+        var html = '<!DOCTYPE html><html lang="sv"><head>' +
+          '<meta charset="UTF-8"><title>' + escapeHtml(r.namn) + '</title>' +
+          '<style>' +
+          'body{font-family:Georgia,serif;max-width:620px;margin:2rem auto;color:#333;padding:0 1rem;}' +
+          'h1{font-size:1.8rem;border-bottom:2px solid #d4a574;padding-bottom:.5rem;margin-bottom:.5rem;}' +
+          '.meta{color:#888;font-size:.9rem;margin-bottom:1.2rem;}' +
+          'h2{font-size:1rem;margin:1.2rem 0 .4rem;color:#5e8a6d;text-transform:uppercase;letter-spacing:.5px;}' +
+          'ul{padding-left:1.3rem;}li{margin-bottom:.25rem;}' +
+          'p{white-space:pre-line;line-height:1.6;color:#555;}' +
+          '.anteckning{font-style:italic;background:#f0dcc8;border-left:3px solid #d4a574;padding:.5rem .75rem;border-radius:0 4px 4px 0;}' +
+          '@media print{body{margin:1rem;}}' +
+          '<\/style><\/head><body>' +
+          '<h1>' + escapeHtml(r.namn) + '</h1>' +
+          (metaRader ? '<p class="meta">' + metaRader + '</p>' : '') +
+          '<h2>Ingredienser</h2>' +
+          '<ul>' + r.ingredienser.map(function (i) { return '<li>' + escapeHtml(i) + '</li>'; }).join('') + '</ul>' +
+          '<h2>Instruktioner</h2>' +
+          '<p>' + escapeHtml(r.instruktioner) + '</p>' +
+          (r.anteckningar ? '<h2>Anteckningar</h2><p class="anteckning">' + escapeHtml(r.anteckningar) + '</p>' : '') +
+          '<script>window.onload=function(){window.print();window.close();};<\/script>' +
+          '</body></html>';
+
+        var popup = window.open('', '_blank', 'width=700,height=900');
+        if (popup) {
+          popup.document.write(html);
+          popup.document.close();
+        } else {
+          visaToast('Tillåt popup-fönster för att skriva ut.', 'fel');
+        }
       };
 
       // ===========================
       // BEKRÄFTELSEDIALOG (MODAL)
-      // Hanterar visning/stängning och callback vid bekräftelse
       // ===========================
 
-      /** Callback som körs om användaren bekräftar borttagning */
-      let modalBekräftaCallback = null;
+      var modalBekräftaCallback = null;
 
-      /** Visa bekräftelsedialogrutan med anpassad text */
       function visaBekräftelse(text, vidBekräftelse) {
         modalText.textContent = text;
         modalBekräftaCallback = vidBekräftelse;
         bekräftelseModal.classList.add('synlig');
-        // Fokusera avbryt-knappen så att Enter inte råkar bekräfta
         modalAvbryt.focus();
       }
 
-      /** Stäng bekräftelsedialogrutan */
       function stängModal() {
         bekräftelseModal.classList.remove('synlig');
         modalBekräftaCallback = null;
       }
 
-      // Bekräfta-knappen – kör callback och stäng
       modalBekräfta.addEventListener('click', function () {
         if (modalBekräftaCallback) modalBekräftaCallback();
         stängModal();
       });
 
-      // Avbryt-knappen – stäng utan åtgärd
       modalAvbryt.addEventListener('click', stängModal);
 
-      // Stäng modalen om man klickar utanför dialogrutan
       bekräftelseModal.addEventListener('click', function (e) {
         if (e.target === bekräftelseModal) stängModal();
       });
 
-      // Stäng modalen med Escape-tangenten
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && bekräftelseModal.classList.contains('synlig')) {
           stängModal();
         }
       });
 
-      /** Ta bort ett recept – visa bekräftelsedialog först */
       window.taBortRecept = function (id) {
-        // Hämta receptets namn för att visa i dialogen
-        const recept = hämtaRecept().find(r => r.id === id);
+        var recept = hämtaRecept().find(function (r) { return r.id === id; });
         if (!recept) return;
-
         visaBekräftelse(
-          `Vill du verkligen ta bort "${recept.namn}"? Det går inte att ångra.`,
+          'Vill du verkligen ta bort "' + recept.namn + '"? Det går inte att ångra.',
           function () {
-            // Filtrera bort receptet och spara
-            const kvarvarande = hämtaRecept().filter(r => r.id !== id);
+            var kvarvarande = hämtaRecept().filter(function (r) { return r.id !== id; });
             sparaRecept(kvarvarande);
             renderaAllt();
+            visaToast('Receptet togs bort.', 'fel');
           }
         );
       };
 
       // ===========================
-      // HJÄLPFUNKTIONER
-      // ===========================
-
-      /** Escape:a HTML-tecken för att förhindra XSS */
-      function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-      }
-
-      // ===========================
       // SÖK- OCH FILTERLYSSNARE
-      // Uppdatera listan i realtid
       // ===========================
 
-      // Sök när användaren skriver (med kort fördröjning för prestanda)
-      let sökTimer;
+      var sökTimer;
       sökfält.addEventListener('input', function () {
         clearTimeout(sökTimer);
         sökTimer = setTimeout(renderaRecept, 200);
       });
 
-      // Hantera klick på kategoriflikar (delegerat till föräldraelementet)
       kategoriflikarEl.addEventListener('click', function (e) {
-        const flik = e.target.closest('.kategoriflik');
+        var flik = e.target.closest('.kategoriflik');
         if (!flik) return;
-
-        // Uppdatera aktiv kategori
         aktivKategori = flik.dataset.kategori;
-
-        // Markera rätt flik som aktiv
-        kategoriflikarEl.querySelectorAll('.kategoriflik').forEach(f => {
+        kategoriflikarEl.querySelectorAll('.kategoriflik').forEach(function (f) {
           f.classList.toggle('aktiv', f === flik);
         });
-
-        // Filtrera om receptlistan
         renderaRecept();
       });
 
-      // Hantera klick på favoritfilter-knappen
       favoritFilterKnapp.addEventListener('click', function () {
         visaBaraFavoriter = !visaBaraFavoriter;
         favoritFilterKnapp.classList.toggle('aktiv', visaBaraFavoriter);
         renderaRecept();
       });
 
+      sorteringEl.addEventListener('change', function () {
+        aktivSortering = this.value;
+        renderaRecept();
+      });
+
+      // ===========================
+      // EXPORT / IMPORT
+      // ===========================
+
+      document.getElementById('exporteraKnapp').addEventListener('click', function () {
+        var recept = hämtaRecept();
+        if (recept.length === 0) {
+          visaToast('Inga recept att exportera.', 'fel');
+          return;
+        }
+        var blob = new Blob([JSON.stringify(recept, null, 2)], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        var datum = new Date().toISOString().slice(0, 10);
+        a.download = 'receptsamling-' + datum + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        visaToast('Recept exporterade!');
+      });
+
+      document.getElementById('importeraKnapp').addEventListener('click', function () {
+        document.getElementById('importeraFil').click();
+      });
+
+      document.getElementById('importeraFil').addEventListener('change', function (e) {
+        var fil = e.target.files[0];
+        if (!fil) return;
+        var läsare = new FileReader();
+        läsare.onload = function (ev) {
+          try {
+            var importerade = JSON.parse(ev.target.result);
+            if (!Array.isArray(importerade)) throw new Error('Ogiltigt format');
+            var befintliga = hämtaRecept();
+            var befintligaIds = new Set(befintliga.map(function (r) { return r.id; }));
+            var nya = importerade.filter(function (r) {
+              return r.id && r.namn && !befintligaIds.has(r.id);
+            });
+            sparaRecept(befintliga.concat(nya));
+            renderaAllt();
+            if (nya.length > 0) {
+              visaToast(nya.length + ' recept importerade!');
+            } else {
+              visaToast('Inga nya recept – alla finns redan.');
+            }
+          } catch (err) {
+            visaToast('Kunde inte läsa filen. Kontrollera att det är en giltig JSON-fil.', 'fel');
+          }
+          e.target.value = '';
+        };
+        läsare.readAsText(fil);
+      });
+
       // ===========================
       // INITIERING
-      // Kör vid sidladdning
       // ===========================
       renderaAllt();
 
