@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receptsamling</title>
+  <style>
+    /* ===========================
+       GRUNDLÄGGANDE STILAR
+       Mjuk färgpalett och typografi
+       =========================== */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Mjuka, varma färger */
+      --färg-bakgrund: #faf7f2;
+      --färg-kort: #ffffff;
+      --färg-primär: #d4a574;
+      --färg-primär-mörk: #b8895a;
+      --färg-primär-ljus: #f0dcc8;
+      --färg-accent: #7ba68a;
+      --färg-accent-mörk: #5e8a6d;
+      --färg-text: #3d3029;
+      --färg-text-ljus: #7a6e64;
+      --färg-ram: #e8ddd0;
+      --färg-fara: #c97070;
+      --färg-fara-mörk: #a85555;
+      --skugga: 0 2px 12px rgba(61, 48, 41, 0.08);
+      --skugga-hover: 0 4px 20px rgba(61, 48, 41, 0.14);
+      --rundning: 12px;
+      --övergång: 0.25s ease;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--färg-bakgrund);
+      color: var(--färg-text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===========================
+       SIDHUVUD
+       =========================== */
+    header {
+      background: linear-gradient(135deg, var(--färg-primär), var(--färg-accent));
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      box-shadow: var(--skugga);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      margin-top: 0.4rem;
+      opacity: 0.9;
+      font-size: 1.05rem;
+    }
+
+    /* ===========================
+       LAYOUT – HUVUDCONTAINER
+       =========================== */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    /* ===========================
+       SÖKFÄLT
+       =========================== */
+    .söksektion {
+      margin-bottom: 1rem;
+    }
+
+    .söksektion input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--färg-ram);
+      border-radius: var(--rundning);
+      font-size: 1rem;
+      background: var(--färg-kort);
+      color: var(--färg-text);
+      transition: border-color var(--övergång);
+    }
+
+    .söksektion input:focus {
+      outline: none;
+      border-color: var(--färg-primär);
+    }
+
+    /* ===========================
+       KATEGORIFLIKAR
+       Klickbara knappar för filtrering
+       =========================== */
+    .kategoriflikar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .kategoriflik {
+      padding: 0.5rem 1.1rem;
+      border: 2px solid var(--färg-ram);
+      border-radius: 99px;
+      background: var(--färg-kort);
+      color: var(--färg-text-ljus);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--övergång);
+      font-family: inherit;
+    }
+
+    .kategoriflik:hover {
+      border-color: var(--färg-primär);
+      color: var(--färg-primär-mörk);
+    }
+
+    /* Aktiv/vald flik */
+    .kategoriflik.aktiv {
+      background: var(--färg-primär);
+      border-color: var(--färg-primär);
+      color: white;
+    }
+
+    .kategoriflik.aktiv:hover {
+      background: var(--färg-primär-mörk);
+      border-color: var(--färg-primär-mörk);
+      color: white;
+    }
+
+    /* ===========================
+       KNAPPAR
+       =========================== */
+    .knapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--rundning);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--övergång), transform var(--övergång);
+    }
+
+    .knapp:active {
+      transform: scale(0.97);
+    }
+
+    .knapp-primär {
+      background-color: var(--färg-primär);
+      color: white;
+    }
+
+    .knapp-primär:hover {
+      background-color: var(--färg-primär-mörk);
+    }
+
+    .knapp-accent {
+      background-color: var(--färg-accent);
+      color: white;
+    }
+
+    .knapp-accent:hover {
+      background-color: var(--färg-accent-mörk);
+    }
+
+    .knapp-fara {
+      background-color: var(--färg-fara);
+      color: white;
+    }
+
+    .knapp-fara:hover {
+      background-color: var(--färg-fara-mörk);
+    }
+
+    .knapp-liten {
+      padding: 0.45rem 0.9rem;
+      font-size: 0.875rem;
+    }
+
+    /* ===========================
+       LÄGG TILL-KNAPP (FLYTANDE)
+       Visar/döljer formuläret
+       =========================== */
+    .visa-formulär-knapp {
+      width: 100%;
+      margin-bottom: 1.5rem;
+      justify-content: center;
+      font-size: 1.05rem;
+    }
+
+    /* ===========================
+       FORMULÄRSEKTION
+       =========================== */
+    .formulär-wrapper {
+      background: var(--färg-kort);
+      border-radius: var(--rundning);
+      box-shadow: var(--skugga);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      /* Animerad visning/döljning */
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .formulär-wrapper.synlig {
+      max-height: 800px;
+      opacity: 1;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .formulär-wrapper h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--färg-primär-mörk);
+    }
+
+    .formulär-grupp {
+      margin-bottom: 1rem;
+    }
+
+    .formulär-grupp label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--färg-text-ljus);
+      font-size: 0.95rem;
+    }
+
+    .formulär-grupp input,
+    .formulär-grupp select,
+    .formulär-grupp textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 2px solid var(--färg-ram);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--färg-text);
+      background: var(--färg-bakgrund);
+      transition: border-color var(--övergång);
+    }
+
+    .formulär-grupp input:focus,
+    .formulär-grupp select:focus,
+    .formulär-grupp textarea:focus {
+      outline: none;
+      border-color: var(--färg-primär);
+    }
+
+    .formulär-grupp textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .formulär-knappar {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    /* ===========================
+       RECEPTLISTA
+       =========================== */
+    .receptlista {
+      display: grid;
+      gap: 1rem;
+    }
+
+    /* Tomt tillstånd */
+    .tomt-meddelande {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--färg-text-ljus);
+      font-size: 1.1rem;
+    }
+
+    .tomt-meddelande span {
+      display: block;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ===========================
+       RECEPTKORT
+       =========================== */
+    .receptkort {
+      background: var(--färg-kort);
+      border-radius: var(--rundning);
+      box-shadow: var(--skugga);
+      overflow: hidden;
+      transition: box-shadow var(--övergång);
+    }
+
+    .receptkort:hover {
+      box-shadow: var(--skugga-hover);
+    }
+
+    /* Kortets rubrikrad */
+    .kort-huvud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      user-select: none;
+      gap: 0.75rem;
+    }
+
+    .kort-huvud:hover {
+      background-color: var(--färg-primär-ljus);
+    }
+
+    .kort-titel {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .kort-kategori {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border-radius: 99px;
+      background-color: var(--färg-primär-ljus);
+      color: var(--färg-primär-mörk);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Expanderbart innehåll i kortet */
+    .kort-innehåll {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+
+    .kort-innehåll-inre {
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    .kort-innehåll h3 {
+      font-size: 0.95rem;
+      color: var(--färg-accent-mörk);
+      margin: 1rem 0 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kort-innehåll h3:first-child {
+      margin-top: 0;
+    }
+
+    .kort-innehåll ul {
+      padding-left: 1.3rem;
+    }
+
+    .kort-innehåll li {
+      margin-bottom: 0.25rem;
+      color: var(--färg-text-ljus);
+    }
+
+    .kort-innehåll p {
+      color: var(--färg-text-ljus);
+      white-space: pre-line;
+    }
+
+    /* Favoritknapp (stjärna) */
+    .favorit-knapp {
+      background: none;
+      border: none;
+      font-size: 1.35rem;
+      cursor: pointer;
+      padding: 0.1rem 0.3rem;
+      line-height: 1;
+      transition: transform var(--övergång);
+      flex-shrink: 0;
+    }
+
+    .favorit-knapp:hover {
+      transform: scale(1.25);
+    }
+
+    .favorit-knapp:active {
+      transform: scale(0.95);
+    }
+
+    /* Favoritfilter-knapp */
+    .favorit-filter {
+      padding: 0.5rem 1.1rem;
+      border: 2px solid var(--färg-ram);
+      border-radius: 99px;
+      background: var(--färg-kort);
+      color: var(--färg-text-ljus);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--övergång);
+      font-family: inherit;
+    }
+
+    .favorit-filter:hover {
+      border-color: var(--färg-primär);
+      color: var(--färg-primär-mörk);
+    }
+
+    .favorit-filter.aktiv {
+      background: var(--färg-primär);
+      border-color: var(--färg-primär);
+      color: white;
+    }
+
+    .favorit-filter.aktiv:hover {
+      background: var(--färg-primär-mörk);
+      border-color: var(--färg-primär-mörk);
+      color: white;
+    }
+
+    /* Åtgärdsknappar i kortet */
+    .kort-åtgärder {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--färg-ram);
+    }
+
+    /* ===========================
+       BEKRÄFTELSEDIALOG (MODAL)
+       Ersätter webbläsarens confirm()
+       =========================== */
+
+    /* Halvgenomskinlig bakgrund som täcker hela sidan */
+    .modal-överlägg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(61, 48, 41, 0.45);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      animation: fadaIn 0.2s ease;
+    }
+
+    .modal-överlägg.synlig {
+      display: flex;
+    }
+
+    /* Själva dialogrutan */
+    .modal-dialog {
+      background: var(--färg-kort);
+      border-radius: var(--rundning);
+      box-shadow: 0 8px 32px rgba(61, 48, 41, 0.25);
+      max-width: 400px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+      animation: glid-upp 0.25s ease;
+    }
+
+    .modal-ikon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .modal-rubrik {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: var(--färg-text);
+    }
+
+    .modal-text {
+      color: var(--färg-text-ljus);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .modal-knappar {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .modal-knappar .knapp {
+      min-width: 110px;
+      justify-content: center;
+    }
+
+    /* Animationer för modalen */
+    @keyframes fadaIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes glid-upp {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ===========================
+       RESPONSIV DESIGN
+       Anpassningar för mobil
+       =========================== */
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      header p {
+        font-size: 0.95rem;
+      }
+
+      .container {
+        padding: 1rem 0.75rem 2rem;
+      }
+
+      .kategoriflikar {
+        gap: 0.4rem;
+      }
+
+      .kategoriflik {
+        padding: 0.4rem 0.85rem;
+        font-size: 0.85rem;
+      }
+
+      .formulär-knappar {
+        flex-direction: column;
+      }
+
+      .formulär-knappar .knapp {
+        justify-content: center;
+      }
+
+      .kort-huvud {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===========================
+       SIDHUVUD
+       =========================== -->
+  <header>
+    <h1>&#127860; Receptsamling</h1>
+    <p>Dina favoritrecept – samlade på ett ställe</p>
+  </header>
+
+  <div class="container">
+
+    <!-- ===========================
+         SÖKFÄLT
+         =========================== -->
+    <section class="söksektion">
+      <input
+        type="text"
+        id="sökfält"
+        placeholder="Sök på namn eller ingrediens..."
+        aria-label="Sök recept"
+      >
+    </section>
+
+    <!-- ===========================
+         KATEGORIFLIKAR
+         Fasta kategorier som klickbara knappar
+         =========================== -->
+    <nav class="kategoriflikar" id="kategoriflikar" aria-label="Filtrera på kategori">
+      <button class="kategoriflik aktiv" data-kategori="" type="button">Alla</button>
+      <button class="kategoriflik" data-kategori="Frukost" type="button">Frukost</button>
+      <button class="kategoriflik" data-kategori="Lunch" type="button">Lunch</button>
+      <button class="kategoriflik" data-kategori="Middag" type="button">Middag</button>
+      <button class="kategoriflik" data-kategori="Fika" type="button">Fika</button>
+      <button class="kategoriflik" data-kategori="Dessert" type="button">Dessert</button>
+      <button class="favorit-filter" id="favoritFilter" type="button">&#9733; Favoriter</button>
+    </nav>
+
+    <!-- Knapp för att visa/dölja formuläret -->
+    <button class="knapp knapp-primär visa-formulär-knapp" id="visaFormulärKnapp" type="button">
+      + Nytt recept
+    </button>
+
+    <!-- ===========================
+         FORMULÄR FÖR ATT LÄGGA TILL / REDIGERA RECEPT
+         =========================== -->
+    <div class="formulär-wrapper" id="formulärWrapper">
+      <h2 id="formulärRubrik">Lägg till nytt recept</h2>
+      <form id="receptFormulär" novalidate>
+        <!-- Dolt fält för att hålla koll på redigerings-ID -->
+        <input type="hidden" id="redigeraId">
+
+        <div class="formulär-grupp">
+          <label for="receptNamn">Namn på receptet *</label>
+          <input type="text" id="receptNamn" placeholder="T.ex. Köttbullar" required>
+        </div>
+
+        <div class="formulär-grupp">
+          <label for="receptKategori">Kategori *</label>
+          <select id="receptKategori" required>
+            <option value="">Välj kategori...</option>
+            <option value="Frukost">Frukost</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Middag">Middag</option>
+            <option value="Fika">Fika</option>
+            <option value="Dessert">Dessert</option>
+          </select>
+        </div>
+
+        <div class="formulär-grupp">
+          <label for="receptIngredienser">Ingredienser * (en per rad)</label>
+          <textarea id="receptIngredienser" placeholder="3 dl vetemjöl&#10;2 ägg&#10;5 dl mjölk" required></textarea>
+        </div>
+
+        <div class="formulär-grupp">
+          <label for="receptInstruktioner">Instruktioner *</label>
+          <textarea id="receptInstruktioner" placeholder="Beskriv steg för steg hur man lagar rätten..." required></textarea>
+        </div>
+
+        <div class="formulär-knappar">
+          <button type="submit" class="knapp knapp-accent" id="sparaKnapp">Spara recept</button>
+          <button type="button" class="knapp knapp-liten" id="avbrytKnapp" style="background:#ddd;color:#555;">Avbryt</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ===========================
+         RECEPTLISTA
+         Här renderas alla receptkort
+         =========================== -->
+    <div class="receptlista" id="receptlista">
+      <!-- Fylls dynamiskt av JavaScript -->
+    </div>
+
+  </div>
+
+  <!-- ===========================
+       BEKRÄFTELSEDIALOG (MODAL)
+       Visas vid borttagning av recept
+       =========================== -->
+  <div class="modal-överlägg" id="bekräftelseModal">
+    <div class="modal-dialog">
+      <span class="modal-ikon">&#9888;&#65039;</span>
+      <div class="modal-rubrik">Ta bort recept</div>
+      <div class="modal-text" id="modalText">
+        Är du säker på att du vill ta bort detta recept? Det går inte att ångra.
+      </div>
+      <div class="modal-knappar">
+        <button class="knapp knapp-fara" id="modalBekräfta">Ta bort</button>
+        <button class="knapp knapp-liten" id="modalAvbryt" style="background:#ddd;color:#555;">Avbryt</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===========================
+    // RECEPTSAMLING – JAVASCRIPT
+    // All logik för att hantera recept
+    // ===========================
+
+    (function () {
+      'use strict';
+
+      // --- DOM-ELEMENT ---
+      const sökfält = document.getElementById('sökfält');
+      const kategoriflikarEl = document.getElementById('kategoriflikar');
+      const visaFormulärKnapp = document.getElementById('visaFormulärKnapp');
+      const formulärWrapper = document.getElementById('formulärWrapper');
+      const formulärRubrik = document.getElementById('formulärRubrik');
+      const receptFormulär = document.getElementById('receptFormulär');
+      const redigeraIdFält = document.getElementById('redigeraId');
+      const receptNamnFält = document.getElementById('receptNamn');
+      const receptKategoriFält = document.getElementById('receptKategori');
+      const receptIngredienserFält = document.getElementById('receptIngredienser');
+      const receptInstruktionerFält = document.getElementById('receptInstruktioner');
+      const sparaKnapp = document.getElementById('sparaKnapp');
+      const avbrytKnapp = document.getElementById('avbrytKnapp');
+      const receptlistaEl = document.getElementById('receptlista');
+
+      // --- FAVORITFILTER ---
+      const favoritFilterKnapp = document.getElementById('favoritFilter');
+
+      // --- MODAL-ELEMENT ---
+      const bekräftelseModal = document.getElementById('bekräftelseModal');
+      const modalText = document.getElementById('modalText');
+      const modalBekräfta = document.getElementById('modalBekräfta');
+      const modalAvbryt = document.getElementById('modalAvbryt');
+
+      // --- NYCKEL FÖR LOCALSTORAGE ---
+      const STORAGE_NYCKEL = 'receptsamling_recept';
+
+      // ===========================
+      // DATAHANTERING
+      // Läs och skriv recept till localStorage
+      // ===========================
+
+      /** Hämta alla recept från localStorage */
+      function hämtaRecept() {
+        try {
+          const data = localStorage.getItem(STORAGE_NYCKEL);
+          return data ? JSON.parse(data) : [];
+        } catch {
+          // Om datan är korrupt, börja med tom lista
+          return [];
+        }
+      }
+
+      /** Spara alla recept till localStorage */
+      function sparaRecept(recept) {
+        localStorage.setItem(STORAGE_NYCKEL, JSON.stringify(recept));
+      }
+
+      /** Skapa ett unikt ID baserat på tidsstämpel + slumpmässig sträng */
+      function skapaId() {
+        return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+      }
+
+      // ===========================
+      // FORMULÄRHANTERING
+      // Visa, dölja och hantera formuläret
+      // ===========================
+
+      /** Visa formuläret med valfri animation */
+      function visaFormulär() {
+        formulärWrapper.classList.add('synlig');
+        visaFormulärKnapp.style.display = 'none';
+        // Fokusera på namnfältet
+        setTimeout(() => receptNamnFält.focus(), 300);
+      }
+
+      /** Dölj formuläret och nollställ alla fält */
+      function döljFormulär() {
+        formulärWrapper.classList.remove('synlig');
+        visaFormulärKnapp.style.display = '';
+        nollställFormulär();
+      }
+
+      /** Nollställ alla formulärfält och återställ rubrik */
+      function nollställFormulär() {
+        receptFormulär.reset();
+        redigeraIdFält.value = '';
+        formulärRubrik.textContent = 'Lägg till nytt recept';
+        sparaKnapp.textContent = 'Spara recept';
+      }
+
+      /** Fyll formuläret med data från ett befintligt recept (för redigering) */
+      function fyllFormulärMedRecept(recept) {
+        redigeraIdFält.value = recept.id;
+        receptNamnFält.value = recept.namn;
+        receptKategoriFält.value = recept.kategori;
+        receptIngredienserFält.value = recept.ingredienser.join('\n');
+        receptInstruktionerFält.value = recept.instruktioner;
+        formulärRubrik.textContent = 'Redigera recept';
+        sparaKnapp.textContent = 'Uppdatera recept';
+      }
+
+      // ===========================
+      // HÄNDELSEHANTERARE FÖR FORMULÄRET
+      // ===========================
+
+      // Visa/dölj formuläret
+      visaFormulärKnapp.addEventListener('click', visaFormulär);
+      avbrytKnapp.addEventListener('click', döljFormulär);
+
+      // Hantera formulärets inskickning
+      receptFormulär.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Läs in värden från formuläret
+        const namn = receptNamnFält.value.trim();
+        const kategori = receptKategoriFält.value;
+        const ingredienserRå = receptIngredienserFält.value.trim();
+        const instruktioner = receptInstruktionerFält.value.trim();
+
+        // Enkel validering – alla fält måste fyllas i
+        if (!namn || !kategori || !ingredienserRå || !instruktioner) {
+          alert('Vänligen fyll i alla fält.');
+          return;
+        }
+
+        // Omvandla ingredienser från text till lista (dela på radbrytningar)
+        const ingredienser = ingredienserRå
+          .split('\n')
+          .map(rad => rad.trim())
+          .filter(rad => rad.length > 0);
+
+        const recept = hämtaRecept();
+        const redigeraId = redigeraIdFält.value;
+
+        if (redigeraId) {
+          // --- UPPDATERA BEFINTLIGT RECEPT ---
+          const index = recept.findIndex(r => r.id === redigeraId);
+          if (index !== -1) {
+            recept[index] = {
+              ...recept[index],
+              namn,
+              kategori,
+              ingredienser,
+              instruktioner,
+              uppdaterad: new Date().toISOString()
+            };
+          }
+        } else {
+          // --- SKAPA NYTT RECEPT ---
+          recept.push({
+            id: skapaId(),
+            namn,
+            kategori,
+            ingredienser,
+            instruktioner,
+            skapad: new Date().toISOString(),
+            uppdaterad: new Date().toISOString()
+          });
+        }
+
+        // Spara och uppdatera vyn
+        sparaRecept(recept);
+        döljFormulär();
+        renderaAllt();
+      });
+
+      // ===========================
+      // RENDERING
+      // Visa recept som kort i listan
+      // ===========================
+
+      // --- AKTIV KATEGORI ---
+      // Håller koll på vilken kategoriflik som är vald (tom sträng = "Alla")
+      let aktivKategori = '';
+      let visaBaraFavoriter = false;
+
+      /** Rendera hela receptlistan baserat på aktuellt sök-/filterval */
+      function renderaRecept() {
+        const recept = hämtaRecept();
+        const sökterm = sökfält.value.trim().toLowerCase();
+
+        // Filtrera recept baserat på sökterm, aktiv kategoriflik och favoritfilter
+        const filtrerade = recept.filter(r => {
+          // Matcha kategori (om en specifik flik är vald)
+          const kategoriMatch = !aktivKategori || r.kategori === aktivKategori;
+
+          // Matcha sökterm mot namn eller ingredienser
+          const söktermMatch = !sökterm ||
+            r.namn.toLowerCase().includes(sökterm) ||
+            r.ingredienser.some(i => i.toLowerCase().includes(sökterm));
+
+          // Matcha favoritfilter
+          const favoritMatch = !visaBaraFavoriter || r.favorit;
+
+          return kategoriMatch && söktermMatch && favoritMatch;
+        });
+
+        // Sortera favoriter högst upp
+        filtrerade.sort((a, b) => {
+          if (a.favorit && !b.favorit) return -1;
+          if (!a.favorit && b.favorit) return 1;
+          return 0;
+        });
+
+        // Visa meddelande om inga recept matchar
+        if (filtrerade.length === 0) {
+          if (recept.length === 0) {
+            receptlistaEl.innerHTML = `
+              <div class="tomt-meddelande">
+                <span>&#128214;</span>
+                Inga recept ännu. Klicka på "Nytt recept" för att komma igång!
+              </div>
+            `;
+          } else if (visaBaraFavoriter) {
+            receptlistaEl.innerHTML = `
+              <div class="tomt-meddelande">
+                <span>&#9733;</span>
+                Inga favoriter ännu. Klicka på stjärnan vid ett recept för att lägga till det som favorit!
+              </div>
+            `;
+          } else {
+            receptlistaEl.innerHTML = `
+              <div class="tomt-meddelande">
+                <span>&#128269;</span>
+                Inga recept matchar din sökning.
+              </div>
+            `;
+          }
+          return;
+        }
+
+        // Bygg HTML för varje receptkort
+        receptlistaEl.innerHTML = filtrerade.map(r => `
+          <article class="receptkort" data-id="${r.id}">
+            <div class="kort-huvud" onclick="växlaKort('${r.id}')">
+              <button class="favorit-knapp" onclick="event.stopPropagation(); växlaFavorit('${r.id}')" aria-label="${r.favorit ? 'Ta bort favorit' : 'Markera som favorit'}" title="${r.favorit ? 'Ta bort favorit' : 'Markera som favorit'}">${r.favorit ? '&#9733;' : '&#9734;'}</button>
+              <span class="kort-titel">${escapeHtml(r.namn)}</span>
+              <span class="kort-kategori">${escapeHtml(r.kategori)}</span>
+            </div>
+            <div class="kort-innehåll" id="kort-${r.id}">
+              <div class="kort-innehåll-inre">
+                <h3>Ingredienser</h3>
+                <ul>
+                  ${r.ingredienser.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
+                </ul>
+                <h3>Instruktioner</h3>
+                <p>${escapeHtml(r.instruktioner)}</p>
+                <div class="kort-åtgärder">
+                  <button class="knapp knapp-primär knapp-liten" onclick="redigeraRecept('${r.id}')">Redigera</button>
+                  <button class="knapp knapp-fara knapp-liten" onclick="taBortRecept('${r.id}')">Ta bort</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      }
+
+      /** Rendera allt – uppdatera receptlistan */
+      function renderaAllt() {
+        renderaRecept();
+      }
+
+      // ===========================
+      // GLOBALA FUNKTIONER
+      // Behövs för onclick-attribut i dynamisk HTML
+      // ===========================
+
+      /** Expandera/kollapsa ett receptkort */
+      window.växlaKort = function (id) {
+        const innehåll = document.getElementById('kort-' + id);
+        if (!innehåll) return;
+
+        // Toggla höjd – 0 = dolt, scrollHeight = visat
+        if (innehåll.style.maxHeight) {
+          innehåll.style.maxHeight = null;
+        } else {
+          innehåll.style.maxHeight = innehåll.scrollHeight + 'px';
+        }
+      };
+
+      /** Växla favoritstatus för ett recept */
+      window.växlaFavorit = function (id) {
+        const recept = hämtaRecept();
+        const index = recept.findIndex(r => r.id === id);
+        if (index === -1) return;
+        recept[index].favorit = !recept[index].favorit;
+        sparaRecept(recept);
+        renderaAllt();
+      };
+
+      /** Öppna formuläret i redigeringsläge för ett specifikt recept */
+      window.redigeraRecept = function (id) {
+        const recept = hämtaRecept().find(r => r.id === id);
+        if (!recept) return;
+
+        fyllFormulärMedRecept(recept);
+        visaFormulär();
+
+        // Scrolla upp till formuläret
+        formulärWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+
+      // ===========================
+      // BEKRÄFTELSEDIALOG (MODAL)
+      // Hanterar visning/stängning och callback vid bekräftelse
+      // ===========================
+
+      /** Callback som körs om användaren bekräftar borttagning */
+      let modalBekräftaCallback = null;
+
+      /** Visa bekräftelsedialogrutan med anpassad text */
+      function visaBekräftelse(text, vidBekräftelse) {
+        modalText.textContent = text;
+        modalBekräftaCallback = vidBekräftelse;
+        bekräftelseModal.classList.add('synlig');
+        // Fokusera avbryt-knappen så att Enter inte råkar bekräfta
+        modalAvbryt.focus();
+      }
+
+      /** Stäng bekräftelsedialogrutan */
+      function stängModal() {
+        bekräftelseModal.classList.remove('synlig');
+        modalBekräftaCallback = null;
+      }
+
+      // Bekräfta-knappen – kör callback och stäng
+      modalBekräfta.addEventListener('click', function () {
+        if (modalBekräftaCallback) modalBekräftaCallback();
+        stängModal();
+      });
+
+      // Avbryt-knappen – stäng utan åtgärd
+      modalAvbryt.addEventListener('click', stängModal);
+
+      // Stäng modalen om man klickar utanför dialogrutan
+      bekräftelseModal.addEventListener('click', function (e) {
+        if (e.target === bekräftelseModal) stängModal();
+      });
+
+      // Stäng modalen med Escape-tangenten
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && bekräftelseModal.classList.contains('synlig')) {
+          stängModal();
+        }
+      });
+
+      /** Ta bort ett recept – visa bekräftelsedialog först */
+      window.taBortRecept = function (id) {
+        // Hämta receptets namn för att visa i dialogen
+        const recept = hämtaRecept().find(r => r.id === id);
+        if (!recept) return;
+
+        visaBekräftelse(
+          `Vill du verkligen ta bort "${recept.namn}"? Det går inte att ångra.`,
+          function () {
+            // Filtrera bort receptet och spara
+            const kvarvarande = hämtaRecept().filter(r => r.id !== id);
+            sparaRecept(kvarvarande);
+            renderaAllt();
+          }
+        );
+      };
+
+      // ===========================
+      // HJÄLPFUNKTIONER
+      // ===========================
+
+      /** Escape:a HTML-tecken för att förhindra XSS */
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // ===========================
+      // SÖK- OCH FILTERLYSSNARE
+      // Uppdatera listan i realtid
+      // ===========================
+
+      // Sök när användaren skriver (med kort fördröjning för prestanda)
+      let sökTimer;
+      sökfält.addEventListener('input', function () {
+        clearTimeout(sökTimer);
+        sökTimer = setTimeout(renderaRecept, 200);
+      });
+
+      // Hantera klick på kategoriflikar (delegerat till föräldraelementet)
+      kategoriflikarEl.addEventListener('click', function (e) {
+        const flik = e.target.closest('.kategoriflik');
+        if (!flik) return;
+
+        // Uppdatera aktiv kategori
+        aktivKategori = flik.dataset.kategori;
+
+        // Markera rätt flik som aktiv
+        kategoriflikarEl.querySelectorAll('.kategoriflik').forEach(f => {
+          f.classList.toggle('aktiv', f === flik);
+        });
+
+        // Filtrera om receptlistan
+        renderaRecept();
+      });
+
+      // Hantera klick på favoritfilter-knappen
+      favoritFilterKnapp.addEventListener('click', function () {
+        visaBaraFavoriter = !visaBaraFavoriter;
+        favoritFilterKnapp.classList.toggle('aktiv', visaBaraFavoriter);
+        renderaRecept();
+      });
+
+      // ===========================
+      // INITIERING
+      // Kör vid sidladdning
+      // ===========================
+      renderaAllt();
+
+    })();
+  </script>
+
+</body>
+</html>
